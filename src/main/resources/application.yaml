@@ -6,11 +6,18 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password:
+      console:
+        enabled: true
+        path: /h2-console
     jpa:
       database-platform: org.hibernate.dialect.H2Dialect
       hibernate:
         ddl-auto: update
       show-sql: true
+    springdoc:
+      swagger-ui:
+        path: /api-docs
+        packages-to-scan: com.banco.cast.controller
     threads:
       virtual:
         enabled: true
