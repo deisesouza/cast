@@ -1,7 +1,7 @@
 package com.banco.cast.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +18,7 @@ public class Usuario {
     private String senha;
     private boolean admin = false;
     @OneToOne(mappedBy = "titular", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Conta conta;
 
     public Usuario(String nome, String senha, boolean admin) {
