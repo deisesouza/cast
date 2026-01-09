@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  api-cast:
+    build: .
+    container_name: cast
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
