@@ -1,7 +1,7 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.10-SNAPSHOT'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.4.1' // Versão SNAPSHOT pode ser instável, recomendo a última estável
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.banco'
@@ -9,34 +9,51 @@ version = '0.0.1-SNAPSHOT'
 description = 'Api com operações básicas de manipulação de contas.'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
-	maven { url = 'https://repo.spring.io/snapshot' }
+    mavenCentral()
+    maven { url = 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Web e Documentação
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.1'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.projectlombok:lombok'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // Persistência e Resiliência
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'com.h2database:h2'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.springframework.retry:spring-retry'
+    implementation 'org.springframework:spring-aspects'
+
+    // Testes - O starter-test já inclui JUnit 5, Mockito e AssertJ
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Necessário para rodar testes em algumas IDEs e CI/CD
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Facilita o carregamento dinâmico de agentes de teste
+    testImplementation 'org.mockito:mockito-core'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
+
+    // Resolve o aviso de carregamento dinâmico do agente no Java 21+
+    jvmArgs("-XX:+EnableDynamicAgentLoading", "-Xshare:off")
 }
