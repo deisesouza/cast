@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy JAR app to Azure Web App - api-cast
 
 on:
@@ -11,9 +8,10 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    # Alterado para Ubuntu para maior performance e menor custo
+    runs-on: ubuntu-latest 
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -23,27 +21,32 @@ jobs:
         with:
           java-version: '21'
           distribution: 'microsoft'
-          cache: 'gradle' # Ativa o cache automático das dependências Gradle
+          cache: 'gradle'
 
-      # O Gradle precisa de permissão de execução no wrapper
+      # Necessário em ambientes Linux/Ubuntu para permitir que o script rode
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      # Executa os testes unitários e de integração
+      - name: Run Tests
+        run: ./gradlew test
+
+      # Gera o JAR apenas se os testes passarem
       - name: Build with Gradle
-        run: ./gradlew bootJar # 'bootJar' criar o JAR executável
+        run: ./gradlew bootJar
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/build/libs/*.jar'
+          path: 'build/libs/*.jar' # Caminho simplificado para Linux
 
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: build
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
       - name: Download artifact from build job
@@ -65,5 +68,3 @@ jobs:
           app-name: 'api-cast'
           slot-name: 'Production'
           package: '*.jar'
-
-          
