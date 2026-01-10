@@ -1,7 +1,7 @@
 # cast
 
 <h4 align="center">
-  AApi com operações básicas de manipulação de contas.
+  Api com operações básicas de manipulação de contas.
 </h4>
 
 ## Tecnologias
@@ -10,6 +10,11 @@
 - [Spring MVC](https://docs.spring.io/spring-framework/reference/web/webmvc.html)
 - [Docker Compose](https://docs.docker.com/compose/)
 - [SpringDoc OpenAPI](https://springdoc.org/)
+
+# Visualizar Documentação/Swagger em Cloud - Microsoft Azure:
+
+- (https://api-cast-gqfzedb5epg3axgr.brazilsouth-01.azurewebsites.net/swagger-ui/index.html)
+
 
 ## Como Executar
 
