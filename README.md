@@ -11,7 +11,7 @@
 - [Docker Compose](https://docs.docker.com/compose/)
 - [SpringDoc OpenAPI](https://springdoc.org/)
 
-# Visualizar Documentação/Swagger em Cloud - Microsoft Azure:
+# Documentação/Swagger:
 
 - (https://api-cast-gqfzedb5epg3axgr.brazilsouth-01.azurewebsites.net/swagger-ui/index.html)
 
