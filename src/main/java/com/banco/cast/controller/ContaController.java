@@ -45,9 +45,9 @@ public class ContaController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/extrato")
-    @Operation(summary = "Consultar extrato", description = "Retorna o saldo e informações da conta.")
+    @PostMapping("/extrato")
     public ResponseEntity<Conta.ExtratoResponse> extrato(@RequestBody Conta.ExtratoRequest request) {
         return ResponseEntity.ok(bancoService.emitirExtrato(request.numeroConta()));
     }
+
 }
