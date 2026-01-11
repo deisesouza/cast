@@ -46,8 +46,6 @@ public class BancoServiceImpl implements BancoService {
     public void creditar(String numeroConta, BigDecimal valor) {
         BigDecimal valorBD = valor;
         Conta conta = this.validarContaPorNumero(numeroConta);
-
-        // Uso de .add() para somar BigDecimal
         conta.setSaldo(conta.getSaldo().add(valorBD));
 
         contaRepository.save(conta);
@@ -80,7 +78,6 @@ public class BancoServiceImpl implements BancoService {
             backoff = @Backoff(delay = 100)
     )
     public void transferir(String contaOrigem, String contaDestino, BigDecimal valor) {
-        // 1. Busca as duas contas (carrega as versões atuais)
         Conta origem = this.validarContaPorNumero(contaOrigem);
         validarSaldo(origem, valor);
         Conta destino = this.validarContaPorNumero(contaDestino);
@@ -99,7 +96,6 @@ public class BancoServiceImpl implements BancoService {
     @Override
     public Conta.ExtratoResponse emitirExtrato(String numeroConta) {
         Conta conta = this.validarContaPorNumero(numeroConta);
-        // Convertendo BigDecimal para Double apenas na resposta se o Record exigir
         return new Conta.ExtratoResponse(
                 conta.getTitular().getNome(),
                 conta.getNumeroConta(),
@@ -111,15 +107,14 @@ public class BancoServiceImpl implements BancoService {
     private Conta validarContaPorNumero(String numeroConta) {
         Conta conta = contaRepository.findByNumeroConta(numeroConta);
         if (conta == null) {
-            throw new EntityNotFoundException("Conta " + numeroConta + " não localizada.");
+            throw new EntityNotFoundException("A conta com número " + numeroConta + " não foi encontrada. Por favor, verifique o número e tente novamente.");
         }
         return conta;
     }
 
     private void validarSaldo(Conta conta, BigDecimal valor) {
-        // compareTo retorna -1 se o saldo for menor que o valor
         if (conta.getSaldo().compareTo(valor) < 0) {
-            throw new IllegalArgumentException("Saldo insuficiente. Saldo atual: " + conta.getSaldo());
+            throw new IllegalArgumentException("Saldo insuficiente para realizar a operação. Saldo atual: " + conta.getSaldo() + ", valor solicitado: " + valor);
         }
     }
 }
