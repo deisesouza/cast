@@ -13,7 +13,7 @@
 
 ## Documentação/Swagger:
 
-- (https://api-cast-gqfzedb5epg3axgr.brazilsouth-01.azurewebsites.net/swagger-ui/index.html)
+- (cast-bpcec0a8hfb2fvff.mexicocentral-01.azurewebsites.net/swagger-ui/index.html)
 
 
 ## Como Executar

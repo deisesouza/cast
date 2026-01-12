@@ -65,7 +65,6 @@ class BancoServiceImplTest {
             Conta conta = new Conta(1L, numConta, "0001", new BigDecimal("100.00"), new Usuario());
 
             when(contaRepository.findByNumeroConta(numConta)).thenReturn(conta);
-
             bancoService.creditar(numConta, new BigDecimal("50.00"));
 
             assertEquals(new BigDecimal("150.00"), conta.getSaldo());
@@ -79,30 +78,23 @@ class BancoServiceImplTest {
             Conta conta = new Conta(1L, numConta, "0001", new BigDecimal("100.00"), new Usuario());
 
             when(contaRepository.findByNumeroConta(numConta)).thenReturn(conta);
-
             bancoService.debitar(numConta, new BigDecimal("40.00"));
 
             assertEquals(new BigDecimal("60.00"), conta.getSaldo());
             verify(contaRepository).save(conta);
         }
 
-        //para seguir a boa prática de "Single Action Lambda", garantimos que nenhuma outra operação
-        // possa acidentalmente lançar uma RuntimeException antes da chamada principal.
         @Test
         @DisplayName("Deve lançar exceção ao debitar valor maior que o saldo")
         void deveLancarExcecaoSaldoInsuficiente() {
-            // Arrange (Preparação)
+
             String numConta = "123456";
             BigDecimal valorDebito = new BigDecimal("50.00");
             Conta conta = new Conta(1L, numConta, "0001", new BigDecimal("30.00"), new Usuario());
 
             when(contaRepository.findByNumeroConta(numConta)).thenReturn(conta);
-
-            // Act & Assert (Ação e Validação)
-            // O lambda agora contém apenas a invocação do método alvo
             assertThrows(IllegalArgumentException.class, () -> bancoService.debitar(numConta, valorDebito));
 
-            // Verificação adicional (Opcional, mas recomendada)
             verify(contaRepository, never()).save(any(Conta.class));
         }
     }
