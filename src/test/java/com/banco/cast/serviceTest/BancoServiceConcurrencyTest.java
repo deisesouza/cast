@@ -34,15 +34,9 @@ class BancoServiceConcurrencyTest {
 
     @BeforeEach
     void setUp() {
-        contaRepository.deleteAll();
-        usuarioRepository.deleteAll();
-
-        // Cria uma conta inicial para os testes
         Usuario.UsuarioRequest request = new Usuario.UsuarioRequest("Admin", "123", true);
         Conta conta = bancoService.criarConta(request);
         numeroContaTeste = conta.getNumeroConta();
-
-        // Define saldo inicial de 1000
         bancoService.creditar(numeroContaTeste, new BigDecimal("1000.00"));
     }
 
@@ -53,8 +47,8 @@ class BancoServiceConcurrencyTest {
         ExecutorService executor = Executors.newFixedThreadPool(numThreads);
         CountDownLatch latch = new CountDownLatch(numThreads);
 
-        // Tentaremos subtrair 100 reais em duas threads ao mesmo tempo
-        // O Optimistic Lock causará erro em uma delas, mas o @Retryable deve salvá-la
+        // Tenta subtrair 100 reais em duas threads ao mesmo tempo
+        // O bloqueio otimista causará erro em uma delas, mas o @Retryable deve salvá-la
         executor.submit(() -> {
             try {
                 bancoService.debitar(numeroContaTeste, new BigDecimal("100.00"));

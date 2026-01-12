@@ -31,7 +31,6 @@ public class BancoServiceImpl implements BancoService {
         String numeroConta = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 999999));
         String agencia = String.valueOf(ThreadLocalRandom.current().nextInt(1000, 9999));
 
-        // Inicializando com BigDecimal.ZERO
         Conta conta = new Conta(null, numeroConta, agencia, BigDecimal.ZERO, usuario);
         return contaRepository.save(conta);
     }
@@ -59,14 +58,9 @@ public class BancoServiceImpl implements BancoService {
             backoff = @Backoff(delay = 100)
     )
     public void debitar(String numeroConta, BigDecimal valor) {
-        BigDecimal valorBD = valor;
         Conta conta = this.validarContaPorNumero(numeroConta);
-
-        validarSaldo(conta, valorBD);
-
-        // Uso de .subtract() para subtrair BigDecimal
-        conta.setSaldo(conta.getSaldo().subtract(valorBD));
-
+        validarSaldo(conta, valor);
+        conta.setSaldo(conta.getSaldo().subtract(valor));
         contaRepository.save(conta);
     }
 
@@ -82,13 +76,11 @@ public class BancoServiceImpl implements BancoService {
         validarSaldo(origem, valor);
         Conta destino = this.validarContaPorNumero(contaDestino);
 
-        // 2. Modifica os estados
         origem.setSaldo(origem.getSaldo().subtract(valor));
         destino.setSaldo(destino.getSaldo().add(valor));
 
-        // 3. Ao finalizar o metodo, o JPA fara o flush.
-        // Se alguém alterou a conta 'origem' ou 'destino' enquanto este metodo rodava,
-        // uma ObjectOptimisticLockingFailureException será lançada aqui.
+        // No momento de salvar se alguém alterou a conta 'origem' ou 'destino' enquanto este metodo rodava,
+        // uma ObjectOptimisticLockingFailureException será lançada aqui pelo JPA.
         contaRepository.save(origem);
         contaRepository.save(destino);
     }

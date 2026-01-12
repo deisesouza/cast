@@ -15,7 +15,6 @@
 
 - (https://cast-bpcec0a8hfb2fvff.mexicocentral-01.azurewebsites.net/swagger-ui/index.html)
 
-
 ## Como Executar
 
 - Rodar o Docker Compose:
